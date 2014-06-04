@@ -89,10 +89,46 @@ VOID DrawArrow( HDC hDC, INT Xc, INT Yc, INT L, INT W, DOUBLE Angle )
   }
   SelectObject(hDC, GetStockObject(DC_BRUSH));
   SelectObject(hDC, GetStockObject(DC_PEN));
-  SetDCPenColor(hDC, RGB(0, 0, 0));
-  SetDCBrushColor(hDC, RGB(255, 255, 255));
   Polygon(hDC, pts_draw, sizeof pts / sizeof pts[0]);
 } /* End of 'DrawArrow' function */
+
+/* Flip fullscreen mode function.
+ * Arguments: none.
+ * Returns: (VOID).
+ */
+VOID FlipFullScreen( HWND hWnd )
+{
+  static BOOL IsFullScreen = FALSE; 
+  static RECT SaveRC;               
+
+  if (!IsFullScreen)
+  {
+    RECT rc;
+
+    GetWindowRect(hWnd, &SaveRC);
+
+    rc.left = 0;
+    rc.top = 0;
+    rc.right = GetSystemMetrics(SM_CXSCREEN);
+    rc.bottom = GetSystemMetrics(SM_CYSCREEN);
+
+    AdjustWindowRect(&rc, GetWindowLong(hWnd, GWL_STYLE), FALSE);
+
+    SetWindowPos(hWnd, HWND_TOP,
+      rc.left, rc.top,
+      rc.right - rc.left, rc.bottom - rc.top,
+      SWP_NOOWNERZORDER);
+    IsFullScreen = TRUE;
+  }
+  else
+  {
+    SetWindowPos(hWnd, HWND_TOPMOST,
+      SaveRC.left, SaveRC.top,
+      SaveRC.right - SaveRC.left, SaveRC.bottom - SaveRC.top,
+      SWP_NOOWNERZORDER);
+    IsFullScreen = FALSE;
+  }
+} /* End of 'FlipFullScreen' function */
 
 /* Window process function 
 *  Arguments:
@@ -125,6 +161,8 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   case WM_CHAR:
     if ((CHAR)wParam == 27)
       DestroyWindow(hWnd);
+    if ((CHAR)wParam == 'f' || (CHAR)wParam == 'à')
+      FlipFullScreen(hWnd);
     return 0;
   case WM_CREATE:
     SetTimer(hWnd, TimerId, 10, NULL);
@@ -165,9 +203,16 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
       LineTo(hDC, W / 2.0  * sin(hour) + W / 2.5, H / 2.0 * -1.0 * cos(hour) + H / 2.5);
     } 
     */
+    SelectObject(hDC, GetStockObject(DC_BRUSH));
+    SetDCBrushColor(hDC, RGB(255, 255, 255));
+    SelectObject(hDC, GetStockObject(DC_PEN));
+    SetDCPenColor(hDC, RGB(0, 255, 0));    
     DrawArrow(hDC, W / 2, H / 2, H / 3.5, W / 20, (-(tm.wHour % 12 + tm.wMinute / 60.0) / 12.0) * 2 * PI);
+    SetDCPenColor(hDC, RGB(0, 0, 255));
     DrawArrow(hDC, W / 2, H / 2, H / 2.5, W / 25, (-(tm.wMinute + tm.wSecond / 60.0) / 60.0) * 2 * PI);
+    SetDCPenColor(hDC, RGB(255, 0, 0));
     DrawArrow(hDC, W / 2, H / 2, H / 2.1, W / 30, (-(tm.wSecond + tm.wMilliseconds / 1000.0) / 60.0) * 2 * PI);
+    SetDCPenColor(hDC, RGB(0, 255, 255));
     DrawArrow(hDC, W / 2, H / 2, H / 2, W / 32, (-tm.wMilliseconds / 1000.0) * 2 * PI);
 
     BitBlt(hBufDC, 0, 0, W, H, hDC, 0, 0, SRCCOPY);
