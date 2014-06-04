@@ -60,6 +60,40 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine,
   return msg.wParam;
 } /* End of 'WinMain' function */
 
+/* Drawing hand function 
+*  Arguments:
+*    - DC handle:
+*        HDC hDC;
+*    - coordinates of center:
+*        INT Xc, Yc;
+*    - width and height of hand:
+*        INT L, W;
+*    - drawing angle:
+*        DOUBLE Angle;
+*  returns:
+*    (VOID)
+*/
+VOID DrawArrow( HDC hDC, INT Xc, INT Yc, INT L, INT W, DOUBLE Angle )
+{
+  INT i;
+  POINT pts[] =
+  {
+    {0, -W}, {-W, 0}, {0, L}, {W, 0}
+  }, pts_draw[sizeof pts / sizeof pts[0]];
+  DOUBLE si = sin(Angle), co = cos(Angle);
+
+  for (i = 0; i < sizeof pts / sizeof pts[0]; i++)
+  {
+    pts_draw[i].x = Xc + (pts[i].x * co - pts[i].y * si);
+    pts_draw[i].y = Yc - (pts[i].x * si + pts[i].y * co);
+  }
+  SelectObject(hDC, GetStockObject(DC_BRUSH));
+  SelectObject(hDC, GetStockObject(DC_PEN));
+  SetDCPenColor(hDC, RGB(0, 0, 0));
+  SetDCBrushColor(hDC, RGB(255, 255, 255));
+  Polygon(hDC, pts_draw, sizeof pts / sizeof pts[0]);
+} /* End of 'DrawArrow' function */
+
 /* Window process function 
 *  Arguments:
 *    - window handle:
@@ -112,16 +146,15 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     SelectObject(hDC, hBufBm);
     return 0;
   case WM_PAINT:
-    hBufDC = BeginPaint(hWnd, &ps);
-    //GetClientRect(hWnd, &rc);   
-    //Rectangle(hDC, rc.left, rc.top, rc.right, rc.bottom);
+    hBufDC = BeginPaint(hWnd, &ps);   
     hMemDC = CreateCompatibleDC(hDC);
     SelectObject(hMemDC, hBm);
     StretchBlt(hDC, 0, 0, W, H, hMemDC, 0, 0, Bm.bmWidth, Bm.bmHeight, SRCCOPY);
-    
+    /*
     sec = tm.wSecond / 30.0 * PI; 
     min = tm.wMinute / 30.0 * PI;
     hour = (tm.wHour % 12) / 6.0 * PI;
+    
     for (i = -100; i++; i < 100)
     {
       MoveToEx(hDC, W / 2, H / 2 + i, NULL);
@@ -130,7 +163,13 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
       LineTo(hDC, W / 2.0  * sin(min) + W / 1.8, H / 2.0 * -1.0 * cos(min) + H / 1.8);
       MoveToEx(hDC, W / 2, H / 2 + i, NULL);
       LineTo(hDC, W / 2.0  * sin(hour) + W / 2.5, H / 2.0 * -1.0 * cos(hour) + H / 2.5);
-    }  
+    } 
+    */
+    DrawArrow(hDC, W / 2, H / 2, H / 3.5, W / 20, (-(tm.wHour % 12 + tm.wMinute / 60.0) / 12.0) * 2 * PI);
+    DrawArrow(hDC, W / 2, H / 2, H / 2.5, W / 25, (-(tm.wMinute + tm.wSecond / 60.0) / 60.0) * 2 * PI);
+    DrawArrow(hDC, W / 2, H / 2, H / 2.1, W / 30, (-(tm.wSecond + tm.wMilliseconds / 1000.0) / 60.0) * 2 * PI);
+    DrawArrow(hDC, W / 2, H / 2, H / 2, W / 32, (-tm.wMilliseconds / 1000.0) * 2 * PI);
+
     BitBlt(hBufDC, 0, 0, W, H, hDC, 0, 0, SRCCOPY);
     DeleteDC(hMemDC);
     EndPaint(hWnd, &ps);
