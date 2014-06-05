@@ -5,7 +5,7 @@
 #define N 6
 
 int Arr[N], Parity;
-int Amount;
+int Lenght;
 double A[N][N], Det = 0;
 
 void LoadMa( char *FileName )
@@ -14,19 +14,19 @@ void LoadMa( char *FileName )
   int i, j;
   double x = 15.0;
 
-  Amount = 0;
+  Lenght = 0;
   F = fopen(FileName, "r");
   if (F == NULL)                                              
     return;
-  fscanf(F, "%i", &Amount);
-  if (Amount < 0)
-    Amount = 0;
+  fscanf(F, "%i", &Lenght);
+  if (Lenght < 0)
+    Lenght = 0;
   else
-    if (Amount > N)
-      Amount = N;
+    if (Lenght > N)
+      Lenght = N;
   
-  for (i = 0; i < Amount; i++)
-    for (j = 0; j < Amount; j++)
+  for (i = 0; i < Lenght; i++)
+    for (j = 0; j < Lenght; j++)
       fscanf(F, "%lf", &A[i][j]);
   x *= 2.0;
 }
@@ -75,10 +75,10 @@ void Go( int Pos )
   int i;
   double prod = 1;
 
-  if (Pos == Amount)
+  if (Pos == Lenght)
   {
     ParityCheck();
-    for (i = 0; i < Amount; i++)
+    for (i = 0; i < Lenght; i++)
       prod *= A[i][Arr[i]];
     prod *= Parity;
     Det += prod;
@@ -86,12 +86,62 @@ void Go( int Pos )
   }
   
   Go(Pos + 1);
-  for (i = Pos + 1; i < Amount; i++)
+  for (i = Pos + 1; i < Lenght; i++)
   {
     Swap(i, Pos);
     Go(Pos + 1);
     Swap(i, Pos);
   }
+}
+
+void PrintMatrix( void )
+{
+  int i, j;
+  
+  for (i = 0; i < Lenght; i++)
+  {
+    for (j = 0; j < Lenght; j++)
+      printf("%lf ", A[i][j]);
+    printf("\n");
+  }
+}
+
+void Gausse( void )
+{
+  int i, j, m, k;
+  double a = A[0][0], ttt, ratio, deter = 1;
+
+  for (j = 0; j < Lenght; j++)
+  {
+    for (k = j; k < Lenght - 1; k++)
+      for (i = j; i < Lenght - 1; i++)
+        if (A[i][j] < A[i + 1][j])
+        {
+          deter *=   -1;
+          for (m = 0; m < Lenght; m++)
+          {
+            ttt = A[i][m];
+            A[i][m] = A[i + 1][m];
+            A[i + 1][m] = ttt;
+            
+          }
+        }
+  }
+  printf("\n\n");
+  PrintMatrix();
+
+  for (j = 0; j < Lenght; j++) 
+    for (k = j + 1; k < Lenght; k++)
+      if (A[j][j] != 0)
+      {       
+        ratio = A[j][k] / A[j][j];
+        for (m = j; m < Lenght; m++)
+          A[m][k] -= ratio * A[m][j];
+      }
+      
+  for (i = 0; i < Lenght; i++)
+    deter *= A[i][i];
+  printf("%lf \n", deter);
 }
 
 void main( void )
@@ -101,18 +151,24 @@ void main( void )
   
 
   LoadMa("matrix.txt");
-  for (j = 0; j < Amount; j++)
+  
+  for (j = 0; j < Lenght; j++)
       Arr[j] = j;
   
   /*
-  for (i = 0; i < Amount; i++)
+  for (i = 0; i < Lenght; i++)
   {
-    for (j = 0; j < Amount; j++)
+    for (j = 0; j < Lenght; j++)
       Arr[j] = A[i][j];
     Go(0);
   }  */
+  
   Go(0);
-  printf("%lf", Det);
+  
+  printf("%lf \n", Det);
+  PrintMatrix();
+  Gausse();
+  PrintMatrix();
   getchar();
 }
 
