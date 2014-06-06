@@ -179,7 +179,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\IMAGE.C"
+				>
+			</File>
+			<File
 				RelativePath=".\T05GLOBE.C"
+				>
+			</File>
+			<File
+				RelativePath=".\VEC.C"
 				>
 			</File>
 		</Filter>
@@ -188,6 +196,18 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\DEF.H"
+				>
+			</File>
+			<File
+				RelativePath=".\IMAGE.H"
+				>
+			</File>
+			<File
+				RelativePath=".\VEC.H"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Файлы ресурсов"
