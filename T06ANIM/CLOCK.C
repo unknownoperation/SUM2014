@@ -99,22 +99,31 @@ static VOID DrawArrow( HDC hDC, INT Xc, INT Yc, INT L, INT W, DOUBLE Angle )
  * ÂÎÇÂÐÀÙÀÅÌÎÅ ÇÍÀ×ÅÍÈÅ: Íåò.
  */
 static VOID ClockUnitRender( ok2UNIT_CLOCK *Unit, ok2ANIM *Ani )
-{    
+{                                          
+  static INT X = 0, Y = 0;
+  
   SYSTEMTIME tm;
+
+  Y += (INT)Ani->JR;
+  X += (INT)Ani->JZ;
+  X %= Ani->W / 2;
+  Y %= Ani->H / 2;
+  
 
   GetLocalTime(&tm);
 
   SelectObject(Ani->hDC, GetStockObject(DC_BRUSH));
   SetDCBrushColor(Ani->hDC, RGB(255, 255, 255));
   SelectObject(Ani->hDC, GetStockObject(DC_PEN));
-  SetDCPenColor(Ani->hDC, RGB(0, 255, 0));    
-  DrawArrow(Ani->hDC, Ani->W / 2, Ani->H / 2, Ani->H / 3.5, Ani->W / 20, (-(tm.wHour % 12 + tm.wMinute / 60.0) / 12.0) * 2 * PI);
+  SetDCPenColor(Ani->hDC, RGB(0, 255, 0));  
+
+  DrawArrow(Ani->hDC, Ani->W / 2 + X, Ani->H / 2 + Y, Ani->H / 3.5, Ani->W / 20, (-(tm.wHour % 12 + tm.wMinute / 60.0) / 12.0) * 2 * PI);
   SetDCPenColor(Ani->hDC, RGB(0, 0, 255));
-  DrawArrow(Ani->hDC, Ani->W / 2, Ani->H / 2, Ani->H / 2.5, Ani->W / 25, (-(tm.wMinute + tm.wSecond / 60.0) / 60.0) * 2 * PI);
+  DrawArrow(Ani->hDC, Ani->W / 2 + X, Ani->H / 2 + Y, Ani->H / 2.5, Ani->W / 25, (-(tm.wMinute + tm.wSecond / 60.0) / 60.0) * 2 * PI);
   SetDCPenColor(Ani->hDC, RGB(255, 0, 0));
-  DrawArrow(Ani->hDC, Ani->W / 2, Ani->H / 2, Ani->H / 2.1, Ani->W / 30, (-(tm.wSecond + tm.wMilliseconds / 1000.0) / 60.0) * 2 * PI);
+  DrawArrow(Ani->hDC, Ani->W / 2 + X, Ani->H / 2 + Y, Ani->H / 2.1, Ani->W / 30, (-(tm.wSecond + tm.wMilliseconds / 1000.0) / 60.0) * 2 * PI);
   SetDCPenColor(Ani->hDC, RGB(0, 255, 255));
-  DrawArrow(Ani->hDC, Ani->W / 2, Ani->H / 2, Ani->H / 2, Ani->W / 32, (-tm.wMilliseconds / 1000.0) * 2 * PI);
+  DrawArrow(Ani->hDC, Ani->W / 2 + X, Ani->H / 2 + Y, Ani->H / 2, Ani->W / 32, (-tm.wMilliseconds / 1000.0) * 2 * PI);
 
 } /* End of 'OK2_AnimUnitRender' function */
 

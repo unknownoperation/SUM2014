@@ -26,6 +26,9 @@ VOID ImageFree( IMAGE *Img );
 /* Функция получения цвета точки изображения */
 DWORD ImageGetP( IMAGE *Img, INT X, INT Y );
 
+/* Drawing image function */
+VOID DrawImage( HDC hDC, IMAGE *Img, INT X, INT Y, BOOL Mode );
+
 #endif /* __IMAGE_H_ */
 
 /* END OF 'IMAGE.H' FILE */

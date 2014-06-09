@@ -69,8 +69,14 @@ static VOID PhotoUnitResponse( ok2UNIT_PHOTO *Unit, ok2ANIM *Ani )
  * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ: Нет.
  */
 static VOID PhotoUnitRender( ok2UNIT_PHOTO *Unit, ok2ANIM *Ani )
-{    
-  
+{                                                               
+  static INT X = 0, Y = 0;
+  X += (INT)Ani->JX;
+  Y += (INT)Ani->JY;
+  X %= Ani->W;
+  Y %= Ani->H;
+  DrawImage(Ani->hDC, &(Unit->Xor), Ani->W - Unit->And.W + X, Y, 0);
+  DrawImage(Ani->hDC, &(Unit->And), Ani->W - Unit->And.W + X, Y, 1);
 } /* End of 'OK2_AnimUnitRender' function */
 
 /* Функция создания объекта анимации.

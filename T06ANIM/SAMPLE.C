@@ -17,6 +17,7 @@ typedef struct tagok2UNIT_COW
   OK2_UNIT_BASE_FIELDS; /* Включение базовых полей */
   DBL ShiftX, ShiftY;   /* Смещение */
   INT Type;             /* Вид */
+  IMAGE And, Xor;       /* Logo pictures */
 } ok2UNIT_COW;
 
 /* Функция инициализации объекта анимации.
@@ -29,6 +30,8 @@ typedef struct tagok2UNIT_COW
  */
 static VOID CowUnitInit( ok2UNIT_COW *Unit, ok2ANIM *Ani )
 {
+  ImageLoad(&Unit->And, "cow_and.bmp");
+  ImageLoad(&Unit->Xor, "cow_xor.bmp");
 } /* End of 'CowUnitInit' function */
 
 /* Функция деинициализации объекта анимации.
@@ -66,13 +69,17 @@ static VOID CowUnitResponse( ok2UNIT_COW *Unit, ok2ANIM *Ani )
 static VOID CowUnitRender( ok2UNIT_COW *Unit, ok2ANIM *Ani )
 {
   DBL
-    x = Unit->ShiftX + sin(Ani->Time + Unit->ShiftX) * Ani->W,
-    y = Unit->ShiftY + sin(Ani->Time + Unit->ShiftY) * Ani->H;
+    x = Unit->ShiftX + sin(Ani->Time - Unit->ShiftX) * Ani->W,
+    y = Unit->ShiftY + sin(Ani->Time - Unit->ShiftY) * Ani->H;
 
+  /*
   if (Unit->Type)
     Rectangle(Ani->hDC, x, y, x + 30, y + 30);
   else
     Ellipse(Ani->hDC, x, y, x + 30, y + 30);
+  */
+  DrawImage(Ani->hDC, &(Unit->Xor), x, y, 0);
+  DrawImage(Ani->hDC, &(Unit->And), x, y, 1);
 } /* End of 'OK2_AnimUnitRender' function */
 
 /* Функция создания объекта анимации.
@@ -113,7 +120,10 @@ static VOID InfoUnitRender( ok2UNIT *Unit, ok2ANIM *Ani )
 
   SetBkMode(Ani->hDC, TRANSPARENT);
   SetTextColor(Ani->hDC, RGB(255, 255, 155));
-  TextOut(Ani->hDC, 10, 10, Buf, sprintf(Buf, "FPS: %.3f", Ani->FPS));
+  TextOut(Ani->hDC, 10, 10, Buf, 
+    sprintf(Buf, 
+      "FPS: %.3f MsX: %i MsY: %i MsDeltaX: %i MsDeltaY: %i MsWheel: %i", 
+      Ani->FPS, Ani->MsX, Ani->MsY, Ani->MsDeltaX, Ani->MsDeltaY, Ani->MsWheel));
 } /* End of 'OK2_AnimUnitRender' function */
 
 /* Функция создания информационного объекта анимации.

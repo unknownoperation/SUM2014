@@ -89,15 +89,16 @@ VOID ImageFree( IMAGE *Img )
  *       IMAGE *Img;
  * ÂÎÇÂÐÀÙÀÅÌÎÅ ÇÍÀ×ÅÍÈÅ: Íåò.
  */
-VOID DrawImage( IMAGE *Img )
+VOID DrawImage( HDC hDC, IMAGE *Img, INT X, INT Y, BOOL Mode )
 {
+  HDC hMemDC;
   if (Img == NULL)
     return;
-  if (Img->hBm != NULL)
-    DeleteObject(Img->hBm);
-  Img->W = Img->H = 0;
-  Img->hBm = NULL;
-  Img->Bits = NULL;
+  hMemDC = CreateCompatibleDC(hDC);
+  SelectObject(hMemDC, Img->hBm);
+
+  BitBlt(hDC, X, Y, Img->W, Img->H, hMemDC, 0, 0, Mode ? SRCINVERT : SRCAND);
+  DeleteDC(hMemDC);
 } /* End of 'ImageFree' function */
 
 

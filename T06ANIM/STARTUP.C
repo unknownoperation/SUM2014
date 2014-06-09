@@ -75,6 +75,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     OK2_AnimAddUnit(OK2_CowUnitCreate());
   OK2_AnimAddUnit(OK2_InfoUnitCreate());
   OK2_AnimAddUnit(OK2_ClockUnitCreate());
+  OK2_AnimAddUnit(OK2_PhotoUnitCreate());
 
   /* Запуск цикла обработки сообщений */
   while (GetMessage(&msg, NULL, 0, 0))

@@ -38,7 +38,14 @@ typedef struct tagok2ANIM
     IsPause;         /* флаг паузы */
 
   /* Подсистема ввода */
-  BYTE Keys[256];     /* Сотояние клавиш клавиатуры и мыши */
+  BYTE Keys[256], KeysOld[256], KeyClick[256]; /* Сотояние клавиш клавиатуры */
+
+  /* Mouse variables */
+  INT MsX, MsY, MsWheel, MsDeltaY, MsDeltaX;
+
+  /* Joystick variables */
+  INT JButsOld[32], JButs[32], JButsClick[32];
+  DBL JX, JY, JZ, JR, JU, JPOV;
 } ok2ANIM;
 
 /* Базовые поля объекта анимации:
