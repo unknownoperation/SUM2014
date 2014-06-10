@@ -179,6 +179,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RENDER.C"
+				>
+			</File>
+			<File
 				RelativePath=".\STARTUP.C"
 				>
 			</File>
@@ -186,11 +190,19 @@
 				RelativePath=".\UNIT.C"
 				>
 			</File>
+			<File
+				RelativePath=".\VEC.C"
+				>
+			</File>
 			<Filter
 				Name="Unit Samples"
 				>
 				<File
 					RelativePath=".\CLOCK.C"
+					>
+				</File>
+				<File
+					RelativePath=".\CUBE.C"
 					>
 				</File>
 				<File
@@ -221,7 +233,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RENDER.H"
+				>
+			</File>
+			<File
 				RelativePath=".\UNITS.H"
+				>
+			</File>
+			<File
+				RelativePath=".\VEC.H"
 				>
 			</File>
 		</Filter>

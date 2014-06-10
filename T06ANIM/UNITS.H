@@ -21,6 +21,9 @@ ok2UNIT * OK2_PhotoUnitCreate( VOID );
 /* Функция создания информационного объекта анимации */
 ok2UNIT * OK2_InfoUnitCreate( VOID );
 
+/* Create coub function */
+ok2UNIT * OK2_CubeUnitCreate( VOID );
+
 #endif /* __UNITS_H_ */
 
 /* END OF 'UNITS.H' FILE */

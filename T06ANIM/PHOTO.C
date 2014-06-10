@@ -11,8 +11,6 @@
 
 #include "anim.h"
 
-#define PI 3.14159265358979323846
-
 /* Структура описания объекта анимации */
 typedef struct tagok2UNIT_PHOTO
 {

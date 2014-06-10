@@ -11,7 +11,7 @@
 
 #include "anim.h"
 
-#define PI 3.14159265358979323846
+#define OK2_PI 3.14159265358979323846
 
 /* Структура описания объекта анимации */
 typedef struct tagok2UNIT_CLOCK
@@ -117,13 +117,13 @@ static VOID ClockUnitRender( ok2UNIT_CLOCK *Unit, ok2ANIM *Ani )
   SelectObject(Ani->hDC, GetStockObject(DC_PEN));
   SetDCPenColor(Ani->hDC, RGB(0, 255, 0));  
 
-  DrawArrow(Ani->hDC, Ani->W / 2 + X, Ani->H / 2 + Y, Ani->H / 3.5, Ani->W / 20, (-(tm.wHour % 12 + tm.wMinute / 60.0) / 12.0) * 2 * PI);
+  DrawArrow(Ani->hDC, Ani->W / 2 + X, Ani->H / 2 + Y, Ani->H / 3.5, Ani->W / 20, (-(tm.wHour % 12 + tm.wMinute / 60.0) / 12.0) * 2 * OK2_PI);
   SetDCPenColor(Ani->hDC, RGB(0, 0, 255));
-  DrawArrow(Ani->hDC, Ani->W / 2 + X, Ani->H / 2 + Y, Ani->H / 2.5, Ani->W / 25, (-(tm.wMinute + tm.wSecond / 60.0) / 60.0) * 2 * PI);
+  DrawArrow(Ani->hDC, Ani->W / 2 + X, Ani->H / 2 + Y, Ani->H / 2.5, Ani->W / 25, (-(tm.wMinute + tm.wSecond / 60.0) / 60.0) * 2 * OK2_PI);
   SetDCPenColor(Ani->hDC, RGB(255, 0, 0));
-  DrawArrow(Ani->hDC, Ani->W / 2 + X, Ani->H / 2 + Y, Ani->H / 2.1, Ani->W / 30, (-(tm.wSecond + tm.wMilliseconds / 1000.0) / 60.0) * 2 * PI);
+  DrawArrow(Ani->hDC, Ani->W / 2 + X, Ani->H / 2 + Y, Ani->H / 2.1, Ani->W / 30, (-(tm.wSecond + tm.wMilliseconds / 1000.0) / 60.0) * 2 * OK2_PI);
   SetDCPenColor(Ani->hDC, RGB(0, 255, 255));
-  DrawArrow(Ani->hDC, Ani->W / 2 + X, Ani->H / 2 + Y, Ani->H / 2, Ani->W / 32, (-tm.wMilliseconds / 1000.0) * 2 * PI);
+  DrawArrow(Ani->hDC, Ani->W / 2 + X, Ani->H / 2 + Y, Ani->H / 2, Ani->W / 32, (-tm.wMilliseconds / 1000.0) * 2 * OK2_PI);
 
 } /* End of 'OK2_AnimUnitRender' function */
 
