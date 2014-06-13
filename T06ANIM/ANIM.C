@@ -334,7 +334,7 @@ VOID OK2_AnimFlipFullScreen( VOID )
 
     SetWindowPos(OK2_Anim.hWnd, HWND_TOP,
       rc.left, rc.top,
-      rc.right - rc.left, rc.bottom - rc.top + 201,
+      rc.right - rc.left, rc.bottom - rc.top,
       SWP_NOOWNERZORDER);
     IsFullScreen = TRUE;
   }
