@@ -113,10 +113,10 @@ VOID OK2_RndGObjDraw( ok2GOBJ *GObj, HDC hDC )
       n1 = GObj->F[i][1],
       n2 = GObj->F[i][2];
                                    
-    glVertex3dv(&GObj->V[n0].X);
-    glVertex3dv(&GObj->V[n1].X);
-    glVertex3dv(&GObj->V[n2].X);
-    glVertex3dv(&GObj->V[n0].X);
+    glVertex3fv(&GObj->V[n0].X);
+    glVertex3fv(&GObj->V[n1].X);
+    glVertex3fv(&GObj->V[n2].X);
+    glVertex3fv(&GObj->V[n0].X);
   }
   glEnd();
 } /* End of 'OK2_RndGObjDraw' function */

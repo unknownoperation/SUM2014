@@ -24,34 +24,34 @@ typedef double DBL;
 /* тип для вектора в простанстве */
 typedef struct tagVEC
 {
-  DBL X, Y, Z;
+  FLT X, Y, Z;
 } VEC;
 
 /* тип для матрицы - массив в структуре */
 typedef struct tagMATR
 {
-  DBL A[4][4];
+  FLT A[4][4];
 } MATR;
 
 /* Unit Matrix */
 extern MATR UnitMatrix;
 
 /* Функция вычисления скалярного произведения двух векторов */
-__inline DBL VecDotVec( VEC V1, VEC V2 )
+__inline FLT VecDotVec( VEC V1, VEC V2 )
 {
   return V1.X * V2.X + V1.Y * V2.Y + V1.Z * V2.Z;
 } /* End of 'VecDotVec' function */
 /* Функция вычисления длины вектора */
-__inline DBL VecLen( VEC V )
+__inline FLT VecLen( VEC V )
 {
-  DBL len = VecDotVec(V, V);
+  FLT len = VecDotVec(V, V);
 
   if (len != 0 && len != 1)
     return sqrt(len);
   return len;
 } /* End of 'VecLen' function */
 /* Функция создания вектора */
-__inline VEC VecSet( DBL X, DBL Y, DBL Z )
+__inline VEC VecSet( FLT X, FLT Y, FLT Z )
 {
   VEC v;
 
@@ -75,12 +75,12 @@ __inline VEC VecSubVec( VEC V1, VEC V2 )
                 V1.Z - V2.Z);
 } /* End of 'VecSubVec' function */
 /* функция умножения вектора на число */
-__inline VEC VecMulNum( VEC V, DBL N )
+__inline VEC VecMulNum( VEC V, FLT N )
 {
   return VecSet(V.X * N, V.Y * N, V.Z * N);
 } /* End of 'VecMulNum' function */
 /* функция деления вектора на число */
-__inline VEC VecDivNum( VEC V, DBL N )
+__inline VEC VecDivNum( VEC V, FLT N )
 {
   return VecSet(V.X / N, V.Y / N, V.Z / N);
 } /* End of 'VecDivNum' function */
@@ -97,14 +97,14 @@ __inline VEC VecCrossVec( VEC V1, VEC V2 )
                 V1.X * V2.Y - V2.X * V1.Y);
 } /* End of 'VecCrossVec' function */
 /* функция вычисления квадрата длины вектора */
-__inline DBL VecLen2( VEC V )
+__inline FLT VecLen2( VEC V )
 {
   return VecDotVec(V, V);
 } /* End of 'VecLen2' function */
 /* функция нормализации вектора */
 __inline VEC VecNormalize( VEC V )
 {
-  DBL a = VecLen2(V);
+  FLT a = VecLen2(V);
   if (a != 0 && a != 1)
     return VecDivNum(V, sqrt(a));
   return V;  
@@ -118,7 +118,7 @@ __inline MATR MatrIdenity( VOID )
   return UnitMatrix;
 } /* End of 'MatrIdenity' function */
 /* matrix translate function */
-__inline MATR MatrTranslate( DBL Dx, DBL Dy, DBL Dz )
+__inline MATR MatrTranslate( FLT Dx, FLT Dy, FLT Dz )
 {
   MATR m = UnitMatrix;
 
@@ -128,7 +128,7 @@ __inline MATR MatrTranslate( DBL Dx, DBL Dy, DBL Dz )
   return m;
 } /* End of 'MatrTranslate' function */
 /* scale matrix function */
-__inline MATR MatrScale( DBL Sx, DBL Sy, DBL Sz )
+__inline MATR MatrScale( FLT Sx, FLT Sy, FLT Sz )
 {
   MATR m = UnitMatrix;
 
@@ -196,37 +196,33 @@ __inline MATR MatrRotateY( DBL AngleInDegree )
 /* rotate matrix by X function */
 __inline MATR MatrRotateX( DBL AngleInDegree )
 {  
-  MATR m = UnitMatrix;        
-  /* Multiplyer degree to radian constant */
-  long double MultiplierDegree2Radian = DEGREE2RADIANL;
+   DBL sine, cosine;
+   MATR m = MatrIdenity();
 
-  _asm {
+  __asm {
     /* FST(0) Angle (from degree to radian) */
     fld  AngleInDegree
-    fmul MultiplierDegree2Radian
+    fmul VG4_MultiplierDegree2Radian
 
     /* FST(0) - cos, FST(1) - sin */
     fsincos
 
-    fld  st(0)
-    fstp qword ptr (m.A + 40) /* cos -> a22 */
-    fstp qword ptr (m.A + 80) /* cos -> a33 */
-
-    fld  st(0) /* duplicate st(0) */
-    fstp qword ptr (m.A + 88) /* sin -> a23 */
-    fldz       /* push 0 (st(0) = 0) */
-    fsubr      /* st(0) = 0 - sin() */
-    fstp qword ptr (m.A + 72) /* -sin -> a32 */                                        
+    fstp cosine /* cos -> cosine */
+    fstp sine   /* sin -> sine */
   }
-
+  m.A[1][1] = cosine;
+  m.A[2][2] = cosine;
+  m.A[1][2] = sine;
+  m.A[2][1] = -sine;
   return m;
+
 } /* End of 'MatrRotateX' function */
 
 /* rotate matrix function */
-__inline MATR MatrRotate( DBL AngleInDegree,
-                 DBL X, DBL Y, DBL Z )
+__inline MATR MatrRotate( FLT AngleInDegree,
+                 FLT X, FLT Y, FLT Z )
 {
-  DBL a, si, co, len;
+  FLT a, si, co, len;
   MATR m;
 
   a = D2R(AngleInDegree / -2.0);
@@ -282,15 +278,15 @@ __inline MATR MatrTranspose( MATR M )
   return m;
 } /* End of 'MatrTranspose' function */
 /* Determinate 3x3 count function */
-__inline DBL MatrDeterm3x3( DBL A11, DBL A12, DBL A13,
-                   DBL A21, DBL A22, DBL A23,
-                   DBL A31, DBL A32, DBL A33 )
+__inline FLT MatrDeterm3x3( FLT A11, FLT A12, FLT A13,
+                   FLT A21, FLT A22, FLT A23,
+                   FLT A31, FLT A32, FLT A33 )
 {
   return A11 * A22 * A33 + A12 * A23 * A31 + A13 * A21 * A32 +
         -A11 * A23 * A32 - A12 * A21 * A33 - A13 * A22 * A31;
 } /* End of 'MatrDeterm3x3' function */
 /* Determinate 4x4 count function */
-__inline DBL MatrDeterm( MATR M )
+__inline FLT MatrDeterm( MATR M )
 {
   return
     M.A[0][0] * MatrDeterm3x3(M.A[1][1], M.A[1][2], M.A[1][3],
@@ -310,7 +306,7 @@ __inline DBL MatrDeterm( MATR M )
 __inline MATR MatrInverse( MATR M )
 {
   MATR r;
-  DBL det = MatrDeterm(M);
+  FLT det = MatrDeterm(M);
   INT i, j, perm[4][3] =
   {
     {1, 2, 3},
@@ -371,9 +367,9 @@ __inline MATR MatrLookAt( VEC Loc, VEC At, VEC UpApprox )
   return r;
 }
 
-__inline MATR MatrProjection( DBL Left, DBL Right,
-                              DBL Bottom, DBL Top,
-                              DBL Near, DBL Far )
+__inline MATR MatrProjection( FLT Left, FLT Right,
+                              FLT Bottom, FLT Top,
+                              FLT Near, FLT Far )
 {
   MATR m =
   {

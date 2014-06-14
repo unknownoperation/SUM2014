@@ -75,7 +75,7 @@ static VOID CubeUnitRender( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
   INT i, s = 5, N = 0;
   VEC p = {1, 0, 0};
 
-  static DBL Delta = 0.1;
+  static FLT Delta = 0.1;
   MATR WVP;
 
   Delta += Ani->JZ * Ani->GlobalDeltaTime;
@@ -94,7 +94,7 @@ static VOID CubeUnitRender( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
     
     WVP = MatrMulMatr(Ani->MatrWorld,
       MatrMulMatr(Ani->MatrView, Ani->MatrProjection));
-    glLoadMatrixd(WVP.A[0]);
+    glLoadMatrixf(WVP.A[0]);
     OK2_RndGObjDraw(&Unit->Cow, Ani->hDC);
   }
   

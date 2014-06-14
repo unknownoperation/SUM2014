@@ -109,7 +109,6 @@ BOOL OK2_AnimInit( HWND hWnd )
   }
   /* параметры OpenGL по-умолчанию */
 
-
   /* инициализируем таймер */
   QueryPerformanceFrequency(&li);
   TimeFreq = li.QuadPart;
@@ -131,6 +130,7 @@ BOOL OK2_AnimInit( HWND hWnd )
   OK2_Anim.MatrWorld = /* матрица преобразования мировой СК */
   OK2_Anim.MatrView =  /* матрица преобразования видовой СК */
   OK2_Anim.MatrProjection = MatrIdenity(); /* матрица проекции */
+  glEnable(GL_DEPTH_TEST);
   return TRUE;
 } /* End of 'OK2_AnimInit' function */
 
@@ -202,51 +202,6 @@ VOID OK2_AnimRender( VOID )
     OK2_Anim.KeyClick[i] = OK2_Anim.Keys[i] && !OK2_Anim.KeysOld[i];
   memcpy(OK2_Anim.KeysOld, OK2_Anim.Keys, sizeof(OK2_Anim.Keys));
 
-
-  /* Обновление таймера */
-  OK2_Anim.Time = (DBL)clock() / CLOCKS_PER_SEC;
-
-  /* Обновление кадра */
-  QueryPerformanceCounter(&li);
-  
-  /* глобальное время */
-  OK2_Anim.GlobalTime = (DBL)(li.QuadPart - TimeStart) / TimeFreq;
-  OK2_Anim.GlobalDeltaTime = (DBL)(li.QuadPart - TimeOld) / TimeFreq;
-
-  /* локальное время */
-  if (OK2_Anim.IsPause)
-  {
-    TimePause += li.QuadPart - TimeOld;
-    OK2_Anim.DeltaTime = 0;
-  }
-  else
-    OK2_Anim.DeltaTime = OK2_Anim.GlobalDeltaTime;
-
-  OK2_Anim.Time = (DBL)(li.QuadPart - TimeStart - TimePause) / TimeFreq;
-
-  /* вычисляем FPS */
-  if (li.QuadPart - TimeFPS > TimeFreq)
-  {
-    OK2_Anim.FPS = FrameCounter / ((DBL)(li.QuadPart - TimeFPS) / TimeFreq);
-    TimeFPS = li.QuadPart;
-    FrameCounter = 0;
-  }
-
-  /* время "прошлого" кадра */
-  TimeOld = li.QuadPart;
-
-
-  /* опрос на изменение состояний объектов */
-  for (i = 0; i < OK2_Anim.NumOfUnits; i++)
-    OK2_Anim.Units[i]->Response(OK2_Anim.Units[i], &OK2_Anim);
-  
-  /* очистка фона */
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  /* рисование объектов */
-  for (i = 0; i < OK2_Anim.NumOfUnits; i++)
-    OK2_Anim.Units[i]->Render(OK2_Anim.Units[i], &OK2_Anim);  
-
   /* Мышь */
   /*  колесо */
   OK2_Anim.MsWheel = OK2_MouseGlobalWheel;
@@ -306,6 +261,49 @@ VOID OK2_AnimRender( VOID )
       }
     }
   }
+  
+  /* Обновление таймера */
+  OK2_Anim.Time = (DBL)clock() / CLOCKS_PER_SEC;
+
+  /* Обновление кадра */
+  QueryPerformanceCounter(&li);
+  
+  /* глобальное время */
+  OK2_Anim.GlobalTime = (DBL)(li.QuadPart - TimeStart) / TimeFreq;
+  OK2_Anim.GlobalDeltaTime = (DBL)(li.QuadPart - TimeOld) / TimeFreq;
+
+  /* локальное время */
+  if (OK2_Anim.IsPause)
+  {
+    TimePause += li.QuadPart - TimeOld;
+    OK2_Anim.DeltaTime = 0;
+  }
+  else
+    OK2_Anim.DeltaTime = OK2_Anim.GlobalDeltaTime;
+
+  OK2_Anim.Time = (DBL)(li.QuadPart - TimeStart - TimePause) / TimeFreq;
+
+  /* вычисляем FPS */
+  if (li.QuadPart - TimeFPS > TimeFreq)
+  {
+    OK2_Anim.FPS = FrameCounter / ((DBL)(li.QuadPart - TimeFPS) / TimeFreq);
+    TimeFPS = li.QuadPart;
+    FrameCounter = 0;
+  }
+
+  /* время "прошлого" кадра */
+  TimeOld = li.QuadPart;
+
+  /* опрос на изменение состояний объектов */
+  for (i = 0; i < OK2_Anim.NumOfUnits; i++)
+    OK2_Anim.Units[i]->Response(OK2_Anim.Units[i], &OK2_Anim);
+  
+  /* очистка фона */
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  /* рисование объектов */
+  for (i = 0; i < OK2_Anim.NumOfUnits; i++)
+    OK2_Anim.Units[i]->Render(OK2_Anim.Units[i], &OK2_Anim);  
 
   FrameCounter++;
 } /* End of 'OK2_AnimRender' function */
