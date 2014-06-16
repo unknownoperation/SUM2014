@@ -221,11 +221,27 @@
 					Name="Resource Handle"
 					>
 					<File
+						RelativePath=".\GEOM.H"
+						>
+					</File>
+					<File
+						RelativePath=".\GEOMHAND.C"
+						>
+					</File>
+					<File
+						RelativePath=".\GEOMLOAD.C"
+						>
+					</File>
+					<File
 						RelativePath=".\IMAGE.C"
 						>
 					</File>
 					<File
 						RelativePath=".\IMAGE.H"
+						>
+					</File>
+					<File
+						RelativePath=".\PRIM.C"
 						>
 					</File>
 					<File

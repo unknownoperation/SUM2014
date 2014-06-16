@@ -33,6 +33,12 @@ typedef struct tagMATR
   FLT A[4][4];
 } MATR;
 
+/* тип цвета */
+typedef struct tagCOLOR
+{
+  FLT R, G, B, A;
+} COLOR;
+
 /* Unit Matrix */
 extern MATR UnitMatrix;
 
@@ -194,15 +200,16 @@ __inline MATR MatrRotateY( DBL AngleInDegree )
   return m;
 } /* End of 'MatrRotateY' function */    
 /* rotate matrix by X function */
-__inline MATR MatrRotateX( DBL AngleInDegree )
+__inline MATR MatrRotateX( FLT AngleInDegree )
 {  
    DBL sine, cosine;
    MATR m = MatrIdenity();
+   FLT a = DEGREE2RADIANL;
 
   __asm {
     /* FST(0) Angle (from degree to radian) */
     fld  AngleInDegree
-    fmul VG4_MultiplierDegree2Radian
+    fmul a
 
     /* FST(0) - cos, FST(1) - sin */
     fsincos
@@ -383,6 +390,15 @@ __inline MATR MatrProjection( FLT Left, FLT Right,
   return m;
 } /* End of 'MatrProjection' function */
 
+__inline COLOR ColorSet(FLT R, FLT G, FLT B)
+{
+  COLOR a;
+  a.R = R;
+  a.G = G;
+  a.B = B;
+
+  return a;
+}
 
 #endif /* __VEC_H_ */
 

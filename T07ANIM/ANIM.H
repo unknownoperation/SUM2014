@@ -8,6 +8,8 @@
 #define __ANIM_H_
 
 #include "image.h"
+#include "geom.h"
+#include "shader.h"
 
 /* Максимальное количество элементов анимации */
 #define OK2_MAX_UNITS 3000
@@ -121,7 +123,10 @@ VOID OK2_AnimAddUnit( ok2UNIT *Unit );
 /* Функция создания объекта анимации */
 ok2UNIT * OK2_AnimUnitCreate( INT Size );
 
+extern UINT OK2_ShaderProg;
 
+/* Системный контекст анимации */
+extern ok2ANIM OK2_Anim;
 
 #endif /* __ANIM_H_ */
 

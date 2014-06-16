@@ -13,7 +13,7 @@
 #pragma comment(lib, "winmm")
 
 /* Системный контекст анимации */
-static ok2ANIM OK2_Anim;
+ok2ANIM OK2_Anim;
 
 /* Данные для синхронизации по времени */
 static INT64
@@ -32,6 +32,7 @@ static INT
   OK2_MouseGlobalWheel;               /* Состояние колеса мыши */
 
 PIXELFORMATDESCRIPTOR pfd = {0};
+UINT OK2_ShaderProg;
 
 /* Функция обработки захваченных мышинных сообщений.
  * АРГУМЕНТЫ:
