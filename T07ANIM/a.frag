@@ -4,7 +4,7 @@
  * LAST UPDATE : 13.06.2014
  */
 
-#version 430
+#version 420
 
 /* Выходное значение цвета рисования */
 out vec4 OutColor;

@@ -144,65 +144,59 @@ __inline MATR MatrScale( FLT Sx, FLT Sy, FLT Sz )
   return m;
 } /* End of 'MatrScale' function */
 /* rotate matrix by Z function */
-__inline MATR MatrRotateZ( DBL AngleInDegree )
+__inline MATR MatrRotateZ( FLT AngleInDegree )
 {  
-  MATR m = UnitMatrix;        
-  /* Multiplyer degree to radian constant */
-  long double MultiplierDegree2Radian = DEGREE2RADIANL;
+  FLT sine, cosine;
+  MATR m = MatrIdenity();
+  FLT a = DEGREE2RADIANL;
 
-  _asm {
+  __asm {
     /* FST(0) Angle (from degree to radian) */
     fld  AngleInDegree
-    fmul MultiplierDegree2Radian
+    fmul a
 
     /* FST(0) - cos, FST(1) - sin */
     fsincos
 
-    fld  st(0)
-    fstp qword ptr m.A /* cos -> a11 */
-    fstp qword ptr (m.A + 40) /* cos -> a22 */
-
-    fld  st(0) /* duplicate st(0) */
-    fstp qword ptr (m.A + 8) /* sin -> a12 */
-    fldz       /* push 0 (st(0) = 0) */
-    fsubr      /* st(0) = 0 - sin() */
-    fstp qword ptr (m.A + 32) /* -sin -> a21 */
+    fstp cosine /* cos -> cosine */
+    fstp sine   /* sin -> sine */
   }
-
+  m.A[0][0] = cosine;
+  m.A[1][1] = cosine;
+  m.A[0][1] = sine;
+  m.A[1][0] = -sine;
   return m;
+
 } /* End of 'MatrRotateZ' function */          
 /* rotate matrix by Y function */
-__inline MATR MatrRotateY( DBL AngleInDegree )
+__inline MATR MatrRotateY( FLT AngleInDegree )
 {  
-  MATR m = UnitMatrix;        
-  /* Multiplyer degree to radian constant */
-  long double MultiplierDegree2Radian = DEGREE2RADIANL;
+  FLT sine, cosine;
+  MATR m = MatrIdenity();
+  FLT a = DEGREE2RADIANL;
 
-  _asm {
+  __asm {
     /* FST(0) Angle (from degree to radian) */
     fld  AngleInDegree
-    fmul MultiplierDegree2Radian
+    fmul a
 
     /* FST(0) - cos, FST(1) - sin */
     fsincos
 
-    fld  st(0)
-    fstp qword ptr m.A /* cos -> a11 */
-    fstp qword ptr (m.A + 80) /* cos -> a33 */
-
-    fld  st(0) /* duplicate st(0) */
-    fstp qword ptr (m.A + 64) /* sin -> a31 */
-    fldz       /* push 0 (st(0) = 0) */
-    fsubr      /* st(0) = 0 - sin() */
-    fstp qword ptr (m.A + 16) /* -sin -> a13 */
+    fstp cosine /* cos -> cosine */
+    fstp sine   /* sin -> sine */
   }
-
+  m.A[0][0] = cosine;
+  m.A[2][2] = cosine;
+  m.A[2][0] = sine;
+  m.A[0][2] = -sine;
   return m;
+
 } /* End of 'MatrRotateY' function */    
 /* rotate matrix by X function */
 __inline MATR MatrRotateX( FLT AngleInDegree )
 {  
-   DBL sine, cosine;
+   FLT sine, cosine;
    MATR m = MatrIdenity();
    FLT a = DEGREE2RADIANL;
 
