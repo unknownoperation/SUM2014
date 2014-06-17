@@ -301,6 +301,7 @@ VOID OK2_AnimRender( VOID )
   
   /* очистка фона */
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClearColor(0.3, 0.5, 0.7, 1.0);
 
   /* рисование объектов */
   for (i = 0; i < OK2_Anim.NumOfUnits; i++)

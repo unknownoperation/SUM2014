@@ -22,7 +22,8 @@ typedef struct tagok2UNIT_CUBE
 {
   OK2_UNIT_BASE_FIELDS; /* Включение базовых полей */
   ok2GOBJ Cow;
-  ok2GEOM Geom;
+  ok2GEOM Geom[30];
+  FLT Scale[30];
 } ok2UNIT_CUBE;
 
 /* Функция инициализации объекта анимации.
@@ -35,8 +36,24 @@ typedef struct tagok2UNIT_CUBE
  */
 static VOID CubeUnitInit( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
 {
-  //OK2_RndGObjLoad(&Unit->Cow, "porsche.object");
-  OK2_GeomLoad(&Unit->Geom, "Houses\\house1.object");
+  //OK2_GeomLoad(&Unit->Geom, ".object");
+  OK2_GeomLoad(&Unit->Geom[0], "imac\\imac.object");
+  Unit->Scale[0] = 50.0;
+
+  OK2_GeomLoad(&Unit->Geom[1], "Mustang\\Mustang.object"); 
+  Unit->Scale[1] = 0.005;
+
+  OK2_GeomLoad(&Unit->Geom[2], "Avent\\Avent.object");
+  Unit->Scale[2] = 1.0;
+
+  OK2_GeomLoad(&Unit->Geom[4], "Houses\\house1.object"); 
+  Unit->Scale[4] = 1.0;
+
+  OK2_GeomLoad(&Unit->Geom[3], "BMW_M3_GTR\\BMW_M3_GTR.object");    
+  Unit->Scale[3] = 0.001;
+
+  OK2_GeomLoad(&Unit->Geom[5], "x6\\x6.object");  
+  Unit->Scale[5] = 3.0;
 } /* End of 'CubeUnitInit' function */
 
 /* Функция деинициализации объекта анимации.
@@ -63,6 +80,19 @@ static VOID CubeUnitClose( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
 static VOID CubeUnitResponse( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
 {
 } /* End of 'CubeUnitResponse' function */
+
+static VOID DrawUnitInPosition( ok2GEOM *Geo, ok2ANIM *Ani, FLT Scale, FLT Rad, FLT Angle )
+{
+  FLT unscale = 1.0 / Scale;
+                                                                             
+  Ani->MatrWorld = MatrMulMatr(MatrRotate(Angle, 0.0, 1.0, 0.0), Ani->MatrWorld);
+  Ani->MatrWorld = MatrMulMatr(MatrTranslate(Rad, 0.0, 0.0), Ani->MatrWorld);
+  Ani->MatrWorld = MatrMulMatr(Ani->MatrWorld, MatrScale(Scale, Scale, Scale));
+  OK2_GeomDraw(Geo);
+  Ani->MatrWorld = MatrMulMatr(Ani->MatrWorld, MatrScale(unscale, unscale, unscale));
+  Ani->MatrWorld = MatrMulMatr(MatrTranslate(-Rad, 0.0, 0.0), Ani->MatrWorld);
+  //Ani->MatrWorld = MatrMulMatr(MatrRotate(-Angle, 0.0, 1.0, 0.0), Ani->MatrWorld);
+}
 
 /* Функция построения объекта анимации.
  * АРГУМЕНТЫ:
@@ -105,7 +135,7 @@ static VOID CubeUnitRender( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
   
   */
 
-  {
+  
   INT i;
   MATR WVP;
   static DBL time;
@@ -158,11 +188,21 @@ static VOID CubeUnitRender( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
   else
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-  Ani->MatrWorld = MatrMulMatr(MatrRotateX(-90), MatrTranslate(0, 0, 0.30 * sin(Ani->Time)));
-  OK2_GeomDraw(&Unit->Geom);
-}
+  //Ani->MatrWorld = MatrTranslate(0, 0, 0.30 * sin(Ani->Time));
+  //Ani->MatrView = MatrRotateY(0.30 * Ani->Time);
+  /*
+  for (i = 0; i < 12; i++)
+  {
+    Ani->MatrWorld = MatrMulMatr(MatrRotate(30.0, 0.0, 1.0, 0.0), Ani->MatrWorld);
+    Ani->MatrWorld = MatrMulMatr(MatrTranslate(1.0, 0.0, 0.0), Ani->MatrWorld);
+    OK2_GeomDraw(&Unit->Geom);
+  }
+  */
+  for (i = 0; i < 6; i++)
+    DrawUnitInPosition(&Unit->Geom[i], Ani, Unit->Scale[i], 10.0, 30.0);
 
-  
+  //Ani->MatrWorld = MatrMulMatr(Ani->MatrWorld, MatrScale(50, 50, 50));
+   
 } /* End of 'OK2_AnimUnitRender' function */
 
 /* Функция создания объекта анимации.

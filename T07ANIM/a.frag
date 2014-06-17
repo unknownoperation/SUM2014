@@ -47,17 +47,18 @@ vec3 Illum( vec3 N )
   vec3 l = normalize(lPos - DrawPos);
 
   N = faceforward(N, ViewDir, N);
-  float nl = dot(N, l);
-  if (nl > 0)
+  float nl = abs(dot(N, l));
+  //if (nl > 0)
     color += (texc.xyz * 1 + Kd + vec3(0.3, 0.63, 0.3)) * nl;
 
   vec3 R = reflect(Dir, N);
   R = Dir - N * (2 * dot(Dir, N));
-  float rl = dot(R, l);
-  if (rl > 0)
+  float rl = abs(dot(R, l));
+  //if (rl > 0)
     color += Ks * pow(dot(R, l), 14);
 
-  return color;
+  return texc.xyz;
+  //return color;
 }
 
 
@@ -66,17 +67,24 @@ void main( void )
 {
   float start = 2.5, end = -0.61;
   float dist = CameraPos.z;
+  /*
   if (dist < -1)
     discard;
+  */
+
   float t = 0.5;
+  /*
   if (dist > start)
     t = 1;
   else
     if (dist < end)
       t = 0;
     else
-      t = 1 - (dist - start) / (end - start);
-  OutColor = vec4(0.3, 0.5, 0.7, 1) * (1 - t) + vec4(Illum(DrawNormal).xyz, Trans) * t;
+      t = 1 - (dist - start) / (end - start); 
+  */
+  //OutColor = vec4(0.3, 0.5, 0.7, 1) * (1 - t) + vec4(Illum(DrawNormal).xyz, Trans) * t;
+  OutColor = vec4(Illum(DrawNormal).xyz, Trans);//vec4(DrawNormal, 1);
+    //OutColor = ;
 } /* End of 'main' function */
 
 /* End of 'a.frag' file */
