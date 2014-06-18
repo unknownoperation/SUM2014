@@ -170,10 +170,10 @@ VOID OK2_GeomDraw( ok2GEOM *G )
         if (loc != -1)
           glUniform1i(loc, 0);
         /*glEnable(GL_TEXTURE_2D);*/
-        /*glActiveTexture(GL_TEXTURE0);*/
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, G->Mtls[mtl].TexNo);
-        /*glActiveTexture(GL_TEXTURE1);*/
-        glBindTexture(GL_TEXTURE_2D, G->Mtls[mtl].TexNo);
+        //glActiveTexture(GL_TEXTURE1);
+        //glBindTexture(GL_TEXTURE_2D, G->Mtls[mtl].TexNo);
       }
       loc = glGetUniformLocation(OK2_ShaderProg, "Ka");
       if (loc != -1)

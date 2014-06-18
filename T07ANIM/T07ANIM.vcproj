@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(CG_INC_PATH);$(DXSDK_DIR)\Include;"
+				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(CG_INC_PATH);$(DXSDK_DIR)\Include;D:\Program Files\OpenAL 1.0 Software Development Kit\Include;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="X:\TGRKIT\LIB;$(CG_LIB_PATH);$(DXSDK_DIR)\Lib\0x86;"
+				AdditionalLibraryDirectories="X:\TGRKIT\LIB;$(CG_LIB_PATH);$(DXSDK_DIR)\Lib\0x86;D:\Program Files\OpenAL 1.0 Software Development Kit\libs;"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -119,7 +119,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(CG_INC_PATH);$(DXSDK_DIR)\Include;"
+				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(CG_INC_PATH);$(DXSDK_DIR)\Include;D:\Program Files\OpenAL 1.0 Software Development Kit\Include;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
@@ -139,7 +139,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="X:\TGRKIT\LIB;$(CG_LIB_PATH);$(DXSDK_DIR)\Lib\0x86;"
+				AdditionalLibraryDirectories="X:\TGRKIT\LIB;$(CG_LIB_PATH);$(DXSDK_DIR)\Lib\0x86;D:\Program Files\OpenAL 1.0 Software Development Kit\libs;"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				SubSystem="2"

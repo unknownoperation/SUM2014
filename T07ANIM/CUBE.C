@@ -9,8 +9,15 @@
 #include <string.h>
 #include <math.h>
 
+#include <al.h>
+#include <alc.h>
+#include <alut.h>
+
 #include "anim.h"
 #include "render.h"
+
+#pragma comment(lib, "alut")
+#pragma comment(lib, "openal32")
 
 typedef struct
 {
@@ -24,6 +31,7 @@ typedef struct tagok2UNIT_CUBE
   ok2GOBJ Cow;
   ok2GEOM Geom[30];
   FLT Scale[30];
+  INT SndBuf[2], SndSrc[2]; /* данные дл€ звука */
 } ok2UNIT_CUBE;
 
 /* ‘ункци€ инициализации объекта анимации.
@@ -36,7 +44,42 @@ typedef struct tagok2UNIT_CUBE
  */
 static VOID CubeUnitInit( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
 {
+  INT format;
+  UINT size, freq;
+  VOID *mem;
+  CHAR loop;
+
+  alutInit(NULL, 0);
+  alGetError();
+
+  /* создаем буфера */
+  alGenBuffers(2, Unit->SndBuf);
+
+  /* загружаем звук в буфер */
+  alutLoadWAVFile("a.wav", &format, &mem,
+    &size, &freq, &loop);
+  alBufferData(Unit->SndBuf[0], format, mem, size, freq);
+  alutUnloadWAV(format, mem, size, freq);
+
+  alutLoadWAVFile("a.wav", &format, &mem,
+    &size, &freq, &loop);
+  alBufferData(Unit->SndBuf[1], format, mem, size, freq);
+  alutUnloadWAV(format, mem, size, freq);
+
+  /* создаем источники звука и параметризируем их */
+  alGenSources(2, Unit->SndSrc);
+
+  alSourcei(Unit->SndSrc[0], AL_BUFFER, Unit->SndBuf[0]); /* закрепл€ем буфер за источником */
+  alSourcef(Unit->SndSrc[0], AL_PITCH, 0.5);      /* скорость воспроизведени€: 1.0 - обычна€*/
+  alSourcef(Unit->SndSrc[0], AL_GAIN, 0.1);          /* громкость: 1.0 Ц обычна€ */
+  alSourcei(Unit->SndSrc[0], AL_LOOPING, 1);       /* флаг повтора: 0 Ц нет, 1 Ц бесконечно */
+
+  alSourcei(Unit->SndSrc[1], AL_BUFFER, Unit->SndBuf[1]);
+  alSourcef(Unit->SndSrc[1], AL_PITCH, 1.5);
+  alSourcef(Unit->SndSrc[1], AL_GAIN, 0.1);
+  alSourcei(Unit->SndSrc[1], AL_LOOPING, 0);
   //OK2_GeomLoad(&Unit->Geom, ".object");
+  /*
   OK2_GeomLoad(&Unit->Geom[0], "imac\\imac.object");
   Unit->Scale[0] = 50.0;
 
@@ -49,11 +92,19 @@ static VOID CubeUnitInit( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
   OK2_GeomLoad(&Unit->Geom[4], "Houses\\house1.object"); 
   Unit->Scale[4] = 1.0;
 
-  OK2_GeomLoad(&Unit->Geom[3], "BMW_M3_GTR\\BMW_M3_GTR.object");    
-  Unit->Scale[3] = 0.001;
-
   OK2_GeomLoad(&Unit->Geom[5], "x6\\x6.object");  
   Unit->Scale[5] = 3.0;
+  */
+  OK2_GeomLoad(&Unit->Geom[3], "BMW_M3_GTR\\BMW_M3_GTR.object");    
+  Unit->Scale[3] = 0.001;
+  /*
+  OK2_GeomLoad(&Unit->Geom[3], "MINICOOPER\\mini_obj.object");    
+  Unit->Scale[3] = 0.001;
+  */   
+  /*
+  OK2_GeomLoad(&Unit->Geom[3], "mord_fustang\\Shelby7..object");    
+  Unit->Scale[3] = 0.001;
+  */
 } /* End of 'CubeUnitInit' function */
 
 /* ‘ункци€ деинициализации объекта анимации.
@@ -79,6 +130,12 @@ static VOID CubeUnitClose( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
  */
 static VOID CubeUnitResponse( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
 {
+  static BOOL IsFirstTimeMusic = TRUE;
+  if (IsFirstTimeMusic)
+  {
+    alSourcePlay(Unit->SndSrc[0]);
+    IsFirstTimeMusic = FALSE;
+  }
 } /* End of 'CubeUnitResponse' function */
 
 static VOID DrawUnitInPosition( ok2GEOM *Geo, ok2ANIM *Ani, FLT Scale, FLT Rad, FLT Angle )
@@ -144,7 +201,7 @@ static VOID CubeUnitRender( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
   Ani->MatrWorld = MatrIdenity();
   Ani->MatrView =
     MatrLookAt(
-      PointTransform(PointTransform(VecSet(25, 25, 25), MatrRotateY(Ani->JR * 180)), MatrRotateZ(Ani->JY * 180)),
+    PointTransform(PointTransform(VecSet(25, 25, 25), MatrRotateY(Ani->JR * 180)), MatrRotateZ(Ani->JY * 180)),
       VecSet(0, 0, 0), VecSet(0, 1, 0));
   WVP = MatrMulMatr(OK2_Anim.MatrWorld, MatrMulMatr(OK2_Anim.MatrView, OK2_Anim.MatrProjection));
   glLoadMatrixf(WVP.A[0]);
@@ -189,7 +246,7 @@ static VOID CubeUnitRender( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
   //Ani->MatrWorld = MatrTranslate(0, 0, 0.30 * sin(Ani->Time));
-  //Ani->MatrView = MatrRotateY(0.30 * Ani->Time);
+  Ani->MatrWorld = MatrMulMatr(Ani->MatrWorld, MatrRotateY(30.0 * Ani->Time));
   /*
   for (i = 0; i < 12; i++)
   {
@@ -198,9 +255,21 @@ static VOID CubeUnitRender( ok2UNIT_CUBE *Unit, ok2ANIM *Ani )
     OK2_GeomDraw(&Unit->Geom);
   }
   */
+  /*
   for (i = 0; i < 6; i++)
-    DrawUnitInPosition(&Unit->Geom[i], Ani, Unit->Scale[i], 10.0, 30.0);
+    DrawUnitInPosition(&Unit->Geom[i], Ani, Unit->Scale`[i], 10.0, 30.0);
+  */
+  Ani->MatrWorld = MatrMulMatr(Ani->MatrWorld, MatrScale(0.001, 0.001, 0.001));
 
+  for (i = 0; i < 12; i++)
+  {
+    Ani->MatrWorld = MatrMulMatr(MatrRotate(30.0, 0.0, 1.0, 0.0), Ani->MatrWorld);
+    Ani->MatrWorld = MatrMulMatr(MatrTranslate(20000.0, 0.0, 0.0), Ani->MatrWorld);
+    //Ani->MatrWorld = MatrMulMatr(MatrRotate(30.0, 0.0, 1.0, 0.0), Ani->MatrWorld);
+    OK2_GeomDraw(&Unit->Geom[3]);
+    Ani->MatrWorld = MatrMulMatr(MatrTranslate(-20000.0, 0.0, 0.0), Ani->MatrWorld);
+    
+  }
   //Ani->MatrWorld = MatrMulMatr(Ani->MatrWorld, MatrScale(50, 50, 50));
    
 } /* End of 'OK2_AnimUnitRender' function */

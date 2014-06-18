@@ -71,16 +71,16 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   UpdateWindow(hWnd);
 
   /*** Добавление объектов ***/
-  /*
-  for (i = 0; i < 30; i++) 
+  
+  for (i = 0; i < 100; i++) 
     OK2_AnimAddUnit(OK2_CowUnitCreate());
   OK2_AnimAddUnit(OK2_ClockUnitCreate());
-  */
-  OK2_AnimAddUnit(OK2_CubeUnitCreate()); 
+  
+  /* OK2_AnimAddUnit(OK2_CubeUnitCreate()); */
   OK2_AnimAddUnit(OK2_InfoUnitCreate()); 
-  /*
+  
   OK2_AnimAddUnit(OK2_PhotoUnitCreate());
-  */
+  
   /* Запуск цикла обработки сообщений */
   while (GetMessage(&msg, NULL, 0, 0))
   {

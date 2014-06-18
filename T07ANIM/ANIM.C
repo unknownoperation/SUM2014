@@ -132,6 +132,9 @@ BOOL OK2_AnimInit( HWND hWnd )
   OK2_Anim.MatrView =  /* матрица преобразования видовой СК */
   OK2_Anim.MatrProjection = MatrIdenity(); /* матрица проекции */
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_ALPHA_TEST);
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   return TRUE;
 } /* End of 'OK2_AnimInit' function */
 

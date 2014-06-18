@@ -37,7 +37,7 @@ BOOL ImageLoad( IMAGE *Img, CHAR *FileName )
 
     bmi.biSize = sizeof(BITMAPINFOHEADER);
     bmi.biWidth = Img->W;
-    bmi.biHeight = -Img->H;
+    bmi.biHeight = Img->H;
     bmi.biBitCount = 32;
     bmi.biPlanes = 1;
     bmi.biCompression = BI_RGB;
